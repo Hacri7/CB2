@@ -140,16 +140,35 @@ def create_order(request):
 
 
 
-@api.post("casher/addToOrder")
-def add_item_to_order(request, data: AddItemToOrderSchema):
-    order = get_object_or_404(Order, id=data.order_id)
-    product = get_object_or_404(Product, id=data.product_id)
 
-    order.products.add(product, through_defaults={'quantity': data.quantity})
-    order.total_price += Decimal(str(product.price)) * data.quantity
+
+@api.post("casher/addToOrder")
+def add_to_order(request, payload: AddItemToOrderSchema):
+    try:
+        order = Order.objects.get(id=payload.order_id)
+        product = Product.objects.get(id=payload.product_id)
+    except Order.DoesNotExist:
+        return {"detail": f"Order with id {payload.order_id} does not exist."}
+    except Product.DoesNotExist:
+        return {"detail": f"Product with id {payload.product_id} does not exist."}
+
+    # Check if quantity is positive
+    if payload.quantity <= 0:
+        return {"detail": "Quantity must be a positive integer."}
+
+    order_product, created = Order_products.objects.get_or_create(order=order, product=product)
+    if not created:
+        order_product.quantity += payload.quantity
+        order_product.save()
+    else:
+        order_product.quantity = payload.quantity
+        order_product.save()
+
+    order.total_price += Decimal(str(product.price)) * payload.quantity
     order.save()
 
-    return JsonResponse({'message': f'Product "{product.name}" added to order.'})
+    return {"message": f"Added {payload.quantity} {product.name}(s) to order {order.id}."}
+
 
 
 

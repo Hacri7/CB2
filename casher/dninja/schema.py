@@ -1,6 +1,7 @@
 from ninja import Schema, ModelSchema, files, File
 from ninja.files import UploadedFile
 from typing import Optional, List,Union
+from pydantic import BaseModel
 
 class userIn(Schema):
     first_name : str
@@ -48,10 +49,12 @@ class CreateOrderSchema(Schema):
     pass
 
 
-class AddItemToOrderSchema(Schema):
+
+class AddItemToOrderSchema(BaseModel):
     order_id: int
     product_id: int
-    quantity: int = 1.0
+    quantity: int = 1
+
     
 
 

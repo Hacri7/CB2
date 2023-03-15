@@ -58,11 +58,11 @@ class Stock(models.Model):
     class Meta:
         db_table = 'Stock'
     id = models.IntegerField(primary_key=True, db_index=True)
-    stock_product_id = models.OneToOneField(Product, on_delete=models.SET("Deleted"))
+    stock_product_id = models.OneToOneField(Product, on_delete=models.CASCADE)
     stock_price = models.FloatField()
     remain_notif = models.IntegerField()
     remain = models.IntegerField()
-    stock_category_id = models.OneToOneField('Category',on_delete=models.SET("Coffee"))
+    stock_category_id = models.OneToOneField(Category, on_delete=models.SET_NULL, null=True)
     
     
     
@@ -92,7 +92,7 @@ class Order(models.Model):
 class Order_products(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(null=False, default=0)
 
     class Meta:
         db_table = 'casher_order_products' 
