@@ -96,7 +96,7 @@ def delete_product(request, product_id: int):
 
     product_obj.delete()
 
-    return HttpResponse(f"Product with id {product_id} was deleted.")
+    return HttpResponse(f"{product_obj.name} was deleted.")
 
 
 
