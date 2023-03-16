@@ -1,6 +1,8 @@
 from django.db import models
 import os
 from django.conf import settings
+from django.utils import timezone
+
 
 # Create your models here.
 class User(models.Model):
@@ -82,7 +84,7 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     def __str__(self):
-        return f'Order {self.id}'
+        return f'Order {self.id} created at {self.created_at}'
 
     
     
@@ -103,7 +105,7 @@ class Receipt(models.Model):
     total_price = models.FloatField()
 
     def __str__(self):
-        return f'Receipt {self.id}'
+        return f"Receipt for Order {self.order.id} ({self.date_created.strftime('%Y-%m-%d %H:%M:%S')})"
 
 
 class ReceiptProduct(models.Model):
@@ -111,6 +113,9 @@ class ReceiptProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     price = models.FloatField()
+    
+    def __str__(self):
+        return f"product for receipt {self.receipt_id}"
     
     
     
