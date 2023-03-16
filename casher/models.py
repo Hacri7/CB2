@@ -105,7 +105,7 @@ class Receipt(models.Model):
     total_price = models.FloatField()
 
     def __str__(self):
-        return f"Receipt for Order {self.order.id} ({self.date_created.strftime('%Y-%m-%d %H:%M:%S')})"
+        return f"Receipt Number {self.id} for Order {self.order.id} ({self.date_created.strftime('%Y-%m-%d %H:%M:%S')})"
 
 
 class ReceiptProduct(models.Model):

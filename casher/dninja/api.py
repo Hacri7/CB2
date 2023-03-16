@@ -280,3 +280,29 @@ def get_all_categories(request):
     categories = Category.objects.all()
     result = [{'id': c.id, 'name': c.name} for c in categories]
     return result
+
+
+
+
+
+@api.get("casher/receipts")
+def list_receipts(request):
+    receipts = Receipt.objects.all()
+    response_data = []
+    for receipt in receipts:
+        products = receipt.products.all()
+        product_data = []
+        for rp in products:
+            product_data.append({
+                "name": rp.product.name,
+                "quantity": rp.quantity,
+                "price": rp.price,
+            })
+        data = {
+            "receipt_id": receipt.id,
+            "order_id": receipt.order.id,
+            "total_price": str(receipt.total_price),
+            "products": product_data,
+        }
+        response_data.append(data)
+    return response_data
